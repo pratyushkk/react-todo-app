@@ -1,25 +1,57 @@
-import logo from './logo.svg';
-import './App.css';
+import { useReducer } from "react";
 
-function App() {
+import "./App.css";
+
+const initialState = [];
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "ADD_Task":
+      return [
+        ...state,
+        {
+          id: state.length + 1,
+          name: action.payload,
+        },
+      ];
+
+    case "DELETE_TASK":
+      return state.filter((d) => d.id !== action.payload);
+
+    default:
+      return state;
+  }
+}
+const Todos = () => {
+  const [todos, dispatch] = useReducer(reducer, initialState);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="body">
+      <h1>Todo List {Todos.lengh}</h1>
+      <div>
+        <input
+          className="input "
+          type="text"
+          placeholder="Add new item..."
+          onBlur={(e) =>
+            dispatch({ type: "ADD_Task", payload: e.target.value })
+          }
+        />
+      </div>
+
+      {todos.map((todo) => (
+        <li key={todo.id}>
+          {todo.name}
+          <button
+            className="delete-button"
+            onClick={() => dispatch({ type: "DELETE_TASK", payload: todo.id })}
+          >
+            ❌
+          </button>
+        </li>
+      ))}
     </div>
   );
-}
+};
 
-export default App;
+export default Todos;
